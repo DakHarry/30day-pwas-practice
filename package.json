@@ -1,0 +1,26 @@
+{
+  "name": "30days-pwa-practice",
+  "version": "1.0.0",
+  "description": "30 days go through Progressive Web Apps's feature",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server -c-1",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DakHarry/30day-pwas-practice.git"
+  },
+  "keywords": [
+    "PWA"
+  ],
+  "author": "DK. Harry Chan",
+  "license": "ISC",
+  "devDependencies": {
+    "http-server": "^0.10.0"
+  },
+  "bugs": {
+    "url": "https://github.com/DakHarry/30day-pwas-practice/issues"
+  },
+  "homepage": "https://github.com/DakHarry/30day-pwas-practice#readme"
+}
