@@ -1,0 +1,35 @@
+.main-image{
+    max-width: 100%;
+    margin: auto;
+    display: block;  
+}
+
+.add-button {
+    z-index: 100;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    padding: 30px;
+    transition: all linear 0.5s;
+    -webkit-transition: all linear 0.5s;
+    cursor: pointer;
+}
+.add-button:hover{
+    opacity: 0.8;
+}
+
+#create-post-form {
+    z-index: 1000;
+    position: fixed;
+    width: 100%;
+    min-height: 100vh;
+    overflow-y: scroll;
+    bottom: 0;
+    top: 56px;
+    background: #fff;
+    text-align: center;
+    display: none;
+}
+#create-post-form > form {
+    margin-top: 10px;
+}
