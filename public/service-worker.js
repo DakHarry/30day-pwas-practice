@@ -1,5 +1,5 @@
-var CACHE_STATIC = 'static-v2.0';
-var CACHE_DYNAMIC = 'dynamic-v1.0';
+var CACHE_STATIC = 'static-v6.2';
+var CACHE_DYNAMIC = 'dynamic-v4.2';
 
 self.addEventListener('install', function(event){
     console.log('[SW] 安裝(Install) Service Worker!',event);
@@ -14,6 +14,7 @@ self.addEventListener('install', function(event){
             cache.addAll([
                 '/',
                 '/index.html',
+                '/offlinePage.html',
                 '/src/js/app.js',
                 '/src/js/post.js',
                 '/src/js/material.min.js',
@@ -52,25 +53,117 @@ self.addEventListener('activate', function(event){
     return self.clients.claim();
 });
 
+// self.addEventListener('fetch', function(event){
+//     // console.log('[SW] 抓資料(Fetch)!',event);
+//     // event.respondWith(fetch(event.request));
+//     event.respondWith(
+//         caches.match(event.request)
+//             .then(function(response){
+//                 //抓不到會拿到 null
+//                 if(response){
+//                     return response;
+//                 }else{
+//                     return fetch(event.request)
+//                         .then(function(res){
+//                             caches.open(CACHE_DYNAMIC)
+//                                 .then(function(cache){
+//                                     cache.put(event.request.url, res.clone());
+//                                     return res;
+//                                 })
+//                         });
+//                 }
+//             })
+//     )
+// });
+
+// self.addEventListener('fetch', function(event){
+//     console.log('Cache only!');
+//     event.respondWith(
+//         caches.match(event.request)
+//     );
+// });
+
+// self.addEventListener('fetch', function(event){
+//     console.log('Network only!');
+//     event.respondWith(
+//         fetch(event.request)
+//     );
+// });
+
+// self.addEventListener('fetch', function(event){
+//     console.log('Network with Cache Fallback');
+//     event.respondWith(
+//         fetch(event.request)
+//         .then(function(response){
+//             return caches.open(CACHE_DYNAMIC)
+//                     .then(function(cache){
+//                         cache.put(event.request.url, response.clone());
+//                         return response;
+//                     })
+//         })
+//         .catch(function(err){
+//             return caches.match(event.request);
+//         })      
+//     );
+// });
+
+// self.addEventListener('fetch', function(event){
+//     console.log('動態快取網路資源',event);
+//     event.respondWith(
+//         caches.open(CACHE_DYNAMIC)
+//             .then(function(cache){
+//                 return fetch(event.request)
+//                         .then(function(response){
+//                             cache.put(event.request, response.clone());
+//                             return response;
+//                         });
+//             })      
+//     );
+// });
+
 self.addEventListener('fetch', function(event){
-    // console.log('[SW] 抓資料(Fetch)!',event);
-    // event.respondWith(fetch(event.request));
-    event.respondWith(
-        caches.match(event.request)
-            .then(function(response){
-                //抓不到會拿到 null
-                if(response){
-                    return response;
-                }else{
+    console.log('url:',event.request.url);
+    var url = 'https://httpbin.org/get';
+    if(-1 <　event.request.url.indexOf(url)){
+        event.respondWith(
+            caches.open(CACHE_DYNAMIC)
+                .then(function(cache){
                     return fetch(event.request)
-                        .then(function(res){
-                            caches.open(CACHE_DYNAMIC)
-                                .then(function(cache){
-                                    cache.put(event.request.url, res.clone());
-                                    return res;
-                                })
-                        });
-                }
-            })
-    )
+                            .then(function(response){
+                            cache.put(event.request, response.clone());
+                            return response;
+                            });
+                })      
+        );
+    } else{
+        event.respondWith(
+             caches.match(event.request)
+                .then(function(response){
+                    if(response){
+                        return response;
+                    }else{
+                        return fetch(event.request)
+                            .then(function(res){
+                                return caches.open(CACHE_DYNAMIC)
+                                    .then(function(cache){
+                                            cache.put(event.request.url, res.clone());
+                                            return res;
+                                    })
+                                    .catch(function(err){
+                                        return caches.open(CACHE_STATIC)
+                                            .then(function(cahce){
+                                                return caches.match('/ErrorPage.html');
+                                            });
+                                    });                                   
+                            });
+                    }
+                })
+                .catch(function(err){
+                    return caches.open(CACHE_STATIC)
+                            .then(function(cache){
+                                return cache.match('/offlinePage.html');
+                            });
+                })
+        );
+    }
 });

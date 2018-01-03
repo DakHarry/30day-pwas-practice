@@ -33,3 +33,11 @@
 #create-post-form > form {
     margin-top: 10px;
 }
+
+.card-frame{
+    margin-left: auto;
+    margin-right: auto;
+}
+.card-btn{
+    float: right;
+}
