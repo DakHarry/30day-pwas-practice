@@ -123,7 +123,7 @@ self.addEventListener('activate', function(event){
 
 self.addEventListener('fetch', function(event){
     console.log('url:',event.request.url);
-    var url = 'https://httpbin.org/get';
+    var url = 'https://days-pwas-practice.firebaseio.com/article.json';
     if(-1 <　event.request.url.indexOf(url)){
         event.respondWith(
             caches.open(CACHE_DYNAMIC)

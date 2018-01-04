@@ -33,24 +33,24 @@ function onSaveButtonClicked(event) {
 
 var sharedMomentsArea = document.querySelector('#shared-moments');
 
-function createData() {
+function createData(article) {
   var cardFrame = document.createElement('div');
   cardFrame.className = 'shared-moment-card mdl-card mdl-shadow--2dp card-frame';
 
   var cardTitle = document.createElement('div');
   cardTitle.className = 'mdl-card__title';
-  cardTitle.style.backgroundImage = 'url("src/images/taipei_street.PNG")';
+  cardTitle.style.backgroundImage = 'url('+article.image+')';
   cardTitle.style.backgroundSize = 'cover';
   cardTitle.style.height = '200px';
   cardFrame.appendChild(cardTitle);
   var cardTitleText = document.createElement('h2');
   cardTitleText.style.color = '#fff';
   cardTitleText.className = 'mdl-card__title-text';
-  cardTitleText.textContent = '台北市';
+  cardTitleText.textContent = article.location;
   cardTitle.appendChild(cardTitleText);
   var cardContentText = document.createElement('div');
   cardContentText.className = 'mdl-card__supporting-text';
-  cardContentText.textContent = '到此一遊!';
+  cardContentText.textContent = article.content;
   cardContentText.style.textAlign = 'center';
   var cardSaveButton = document.createElement('button');
   cardSaveButton.className = 'card-btn';
@@ -58,14 +58,51 @@ function createData() {
   cardSaveButton.addEventListener('click', onSaveButtonClicked);
   cardContentText.appendChild(cardSaveButton);
   cardFrame.appendChild(cardContentText);
-  componentHandler.upgradeElement(cardFrame);
   sharedMomentsArea.appendChild(cardFrame);
 }
 
-var url = 'https://httpbin.org/get';
+// var url = 'https://httpbin.org/get';
+
+
+// fetch(url)
+//     .then(function(response){
+//         return response.json();
+//     })
+//     .then(function(data){
+//         createData();
+//     });
+function updateArticles(articles){
+    for(var i =0; i < articles.length; i++){
+        createData(articles[i]);
+    }
+}
+function getArticleArray(data){
+    var articles = [];
+    for(var key in data){
+        console.log('key',key);
+        articles.push(data[key]);
+    }
+    return articles;
+}
+
+var dataFromNetwork = false;
+var articleUrl = 'https://days-pwas-practice.firebaseio.com/article.json';
+
+fetch(articleUrl)
+.then(function(response){
+    return response.json();
+})
+.then(function(data){
+    dataFromNetwork = true;
+    // var articles = [];
+    // for(var key in data){
+    //     articles.push(data[key]);
+    // }
+    updateArticles(getArticleArray(data));
+});
 
 if('caches' in window){
-    caches.match(url)
+    caches.match(articleUrl)
         .then(function(response){
             if(response){
                 return response.json();
@@ -73,13 +110,12 @@ if('caches' in window){
         })
         .then(function(data){
             console.log(data);
-            createData();
-        })
+            if(!dataFromNetwork){
+            //    var articles = [];
+            //     for(var key in data){
+            //         articles.push(data[key]);
+            //     }
+                updateArticles(getArticleArray(data));
+            }
+        });
 }
-fetch(url)
-    .then(function(response){
-        return response.json();
-    })
-    .then(function(data){
-        createData();
-    });
