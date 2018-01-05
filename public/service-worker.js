@@ -1,3 +1,6 @@
+importScripts('/src/js/idb.js');
+importScripts('/src/js/indexedDB.js');
+
 var CACHE_STATIC = 'static-v6.2';
 var CACHE_DYNAMIC = 'dynamic-v4.2';
 
@@ -16,6 +19,8 @@ self.addEventListener('install', function(event){
                 '/index.html',
                 '/offlinePage.html',
                 '/src/js/app.js',
+                '/src/js/idb.js',
+                '/src/js/indexedDB.js',
                 '/src/js/post.js',
                 '/src/js/material.min.js',
                 '/src/css/material.blue-red.min.css',
@@ -126,14 +131,26 @@ self.addEventListener('fetch', function(event){
     var url = 'https://days-pwas-practice.firebaseio.com/article.json';
     if(-1 <　event.request.url.indexOf(url)){
         event.respondWith(
-            caches.open(CACHE_DYNAMIC)
-                .then(function(cache){
-                    return fetch(event.request)
-                            .then(function(response){
-                            cache.put(event.request, response.clone());
-                            return response;
-                            });
-                })      
+            // caches.open(CACHE_DYNAMIC)
+            //     .then(function(cache){
+            //         return fetch(event.request)
+            //                 .then(function(response){
+            //                 cache.put(event.request, response.clone());
+            //                 return response;
+            //                 });
+            //     })      
+            fetch(event.request)
+                .then(function(response){
+                    var copyRes = response.clone();
+                    copyRes.json()
+                        .then(function(data){
+                            console.log('copyRes.json()',data);
+                            for(var key in data){
+                                console.log('key',key);
+                                writeData('article',data[key]);
+                            }
+                        })
+                })
         );
     } else{
         event.respondWith(
