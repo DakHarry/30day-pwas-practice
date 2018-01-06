@@ -1,8 +1,8 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/indexedDB.js');
 
-var CACHE_STATIC = 'static-v8.4';
-var CACHE_DYNAMIC = 'dynamic-v6.3';
+var CACHE_STATIC = 'static-v8.6';
+var CACHE_DYNAMIC = 'dynamic-v6.4';
 
 self.addEventListener('install', function(event){
     console.log('[SW] 安裝(Install) Service Worker!',event);

@@ -8,7 +8,8 @@ addPostButton.addEventListener('click', openCreatePostModal);
 closeModalButton.addEventListener('click', closeCreatePostModal);
 
 function openCreatePostModal() {
-  createPostArea.style.display = 'block';
+  // createPostArea.style.display = 'block';
+  createPostArea.style.transform = 'translateY(0)';
   if(deferredPrompt){
       deferredPrompt.prompt();
       deferredPrompt.userChoice.then(function(choiceResult){
@@ -23,5 +24,7 @@ function openCreatePostModal() {
 }
 
 function closeCreatePostModal() {
-  createPostArea.style.display = 'none';
+  // createPostArea.style.display = 'none';
+  createPostArea.style.transform = 'translateY(100vh)';
+  
 }
