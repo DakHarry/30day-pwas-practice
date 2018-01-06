@@ -1,8 +1,8 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/indexedDB.js');
 
-var CACHE_STATIC = 'static-v6.2';
-var CACHE_DYNAMIC = 'dynamic-v4.2';
+var CACHE_STATIC = 'static-v8.4';
+var CACHE_DYNAMIC = 'dynamic-v6.3';
 
 self.addEventListener('install', function(event){
     console.log('[SW] 安裝(Install) Service Worker!',event);
@@ -130,26 +130,22 @@ self.addEventListener('fetch', function(event){
     console.log('url:',event.request.url);
     var url = 'https://days-pwas-practice.firebaseio.com/article.json';
     if(-1 <　event.request.url.indexOf(url)){
-        event.respondWith(
-            // caches.open(CACHE_DYNAMIC)
-            //     .then(function(cache){
-            //         return fetch(event.request)
-            //                 .then(function(response){
-            //                 cache.put(event.request, response.clone());
-            //                 return response;
-            //                 });
-            //     })      
+        event.respondWith(     
             fetch(event.request)
                 .then(function(response){
                     var copyRes = response.clone();
-                    copyRes.json()
+                    clearAllData('article')
+                        .then(function(){
+                            return copyRes.json();
+                        })
                         .then(function(data){
                             console.log('copyRes.json()',data);
                             for(var key in data){
                                 console.log('key',key);
                                 writeData('article',data[key]);
                             }
-                        })
+                        });
+                    return response;
                 })
         );
     } else{

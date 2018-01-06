@@ -21,3 +21,35 @@ function readAllData(table){
                 return store.getAll();
             });
 }
+
+function clearAllData(table){
+    return dbPromise
+            .then(function(db){
+                var transaction = db.transaction(table, 'readwrite');
+                var store = transaction.objectStore(table);
+                store.clear();
+                return transaction.complete;
+            });
+}
+
+function deleteArticleData(table, id){
+     return dbPromise
+            .then(function(db){
+                var transaction = db.transaction(table, 'readwrite');
+                var store = transaction.objectStore(table);
+                store.delete(id);
+                return transaction.complete;
+            });
+}
+
+function getArticleData(table, id){
+    return dbPromise
+            .then(function(){
+                var transaction = db.transaction(table, 'readonly');
+                var store = transaction.objectStore(table);
+                return store.get(id);
+            })
+            .then(function(data){
+                console.log('article:',data);
+            });
+}

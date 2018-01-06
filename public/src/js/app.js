@@ -94,28 +94,45 @@ fetch(articleUrl)
 })
 .then(function(data){
     dataFromNetwork = true;
-    // var articles = [];
-    // for(var key in data){
-    //     articles.push(data[key]);
-    // }
+    console.log('fetch in window',dataFromNetwork);
+    
     updateArticles(getArticleArray(data));
+})
+.then(function(){
+    getArticleFromDB();
+})
+.catch(function(){
+    getArticleFromDB();    
 });
 
-if('caches' in window){
-    caches.match(articleUrl)
-        .then(function(response){
-            if(response){
-                return response.json();
-            }
-        })
-        .then(function(data){
-            console.log(data);
-            if(!dataFromNetwork){
-            //    var articles = [];
-            //     for(var key in data){
-            //         articles.push(data[key]);
-            //     }
-                updateArticles(getArticleArray(data));
-            }
-        });
+function getArticleFromDB(){
+    if ('indexedDB' in window){
+        readAllData('article')
+            .then(function(data){
+                console.log('indexedDB in window',dataFromNetwork);
+                if(!dataFromNetwork){
+                    console.log('IndexedDB Data',data);
+                    updateArticles(data);
+                }
+            });
+    }
 }
+
+// if('caches' in window){
+//     caches.match(articleUrl)
+//         .then(function(response){
+//             if(response){
+//                 return response.json();
+//             }
+//         })
+//         .then(function(data){
+//             console.log(data);
+//             if(!dataFromNetwork){
+//             //    var articles = [];
+//             //     for(var key in data){
+//             //         articles.push(data[key]);
+//             //     }
+//                 updateArticles(getArticleArray(data));
+//             }
+//         });
+// }
