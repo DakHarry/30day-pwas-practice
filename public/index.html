@@ -50,10 +50,14 @@
             </div>
             <main class="mdl-layout__content">
                 <div id="create-post-form">
-                    <form>
+                    <form id="form__article">
                         <div class="input-section mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input class="mdl-textfield__input" type="text" id="title">
-                            <label class="mdl-textfield__label" for="title" name="title">標題</label>
+                            <label class="mdl-textfield__label" for="title" name="title">主題</label>
+                        </div>
+                        <div class="input-section mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="post-location">
+                            <input class="mdl-textfield__input" type="text" id="location">
+                            <label class="mdl-textfield__label" for="location" name="location">地點</label>
                         </div>
                         <div class="input-section mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="post-content">
                             <input class="mdl-textfield__input" type="text" id="content">
@@ -84,6 +88,10 @@
                             id="add-post-btn">
                         <i class="material-icons">add</i>
                     </button>
+                </div>
+                <div id="confirmation-toast" aria-live="assertive" aria-atomic="true" aria-relevant="text" class="mdl-snackbar mdl-js-snackbar">
+                    <div class="mdl-snackbar__text"></div>
+                    <button type="button" class="mdl-snackbar__action"></button>
                 </div>
             </main>
         </div>

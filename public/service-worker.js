@@ -1,8 +1,8 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/indexedDB.js');
 
-var CACHE_STATIC = 'static-v8.6';
-var CACHE_DYNAMIC = 'dynamic-v6.4';
+var CACHE_STATIC = 'static-v9.3';
+var CACHE_DYNAMIC = 'dynamic-v7.3';
 
 self.addEventListener('install', function(event){
     console.log('[SW] 安裝(Install) Service Worker!',event);
@@ -176,6 +176,45 @@ self.addEventListener('fetch', function(event){
                             .then(function(cache){
                                 return cache.match('/offlinePage.html');
                             });
+                })
+        );
+    }
+});
+
+self.addEventListener('sync', function(event){
+    console.log('[SW] Background syncing', event);
+    if(event.tag === 'sync-new-post') {
+        console.log('抓到TAG-POST 表單');
+        event.waitUntil(
+            readAllData('sync-posts')
+                .then(function(data){
+                    for(var post of data)
+                    {
+                        fetch('https://days-pwas-practice.firebaseio.com/article.json',{
+                            method: 'POST',
+                            headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                id: post.id,
+                                title: post.title,
+                                location: post.location,
+                                content: post.content,
+                                image: post.image
+                            })
+                        })
+                        .then(function (res) {
+                            console.log('送出表單',res);
+                            if(res.ok){
+                                deleteArticleData('sync-posts',post.id);
+                            }
+                        })
+                        .catch(function(err){
+                            console.log('POST表單失敗!',err);
+                        });
+                    }
+                      
                 })
         );
     }
