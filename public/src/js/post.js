@@ -30,7 +30,7 @@ function closeCreatePostModal() {
   // createPostArea.style.display = 'none';
   createPostArea.style.transform = 'translateY(100vh)';
 }
-var articleUrl = 'https://days-pwas-practice.firebaseio.com/article.json';
+var articleUrl = 'https://us-central1-days-pwas-practice.cloudfunctions.net/storePostData';
 function sendForm(){
   fetch(articleUrl,{
     method: 'POST',

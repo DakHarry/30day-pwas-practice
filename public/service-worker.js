@@ -1,8 +1,8 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/indexedDB.js');
 
-var CACHE_STATIC = 'static-v9.3';
-var CACHE_DYNAMIC = 'dynamic-v7.3';
+var CACHE_STATIC = 'static-v10.0';
+var CACHE_DYNAMIC = 'dynamic-v8.0';
 
 self.addEventListener('install', function(event){
     console.log('[SW] 安裝(Install) Service Worker!',event);
@@ -190,7 +190,7 @@ self.addEventListener('sync', function(event){
                 .then(function(data){
                     for(var post of data)
                     {
-                        fetch('https://days-pwas-practice.firebaseio.com/article.json',{
+                        fetch('https://us-central1-days-pwas-practice.cloudfunctions.net/storePostData',{
                             method: 'POST',
                             headers: {
                             'Content-Type': 'application/json',
