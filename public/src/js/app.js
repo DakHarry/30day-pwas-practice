@@ -142,7 +142,7 @@ function displayNotification(){
         var options = {
             body: '歡迎進入30天PWA的世界',
             icon: '/src/images/icons/demo-icon96.png',
-            image: '../images/demo.JPG',
+            image: '/src/images/demo.JPG',
             dir: 'ltr',
             lang: 'zh-Hant', //BCP 47
             vibrate: [100, 50, 200],
@@ -174,7 +174,7 @@ function setPushSubscribe(){
         .then(function(sub){
             if(sub === null){
                 //建立新的訂閱
-                var vapidPKey = 'BERFARN6mum_Jl39dKxPx_veR9_bLHnXs5GHn63zLwbPAebmn-IeLMCuzeyFIZNnQR-dGZO_WdxC7xak6W9p6Mc';
+                var vapidPKey = 'BNaAfuqm_lOcGE8H8z-ad1BjE3gBmDQDppECZC1btjfVs4fpSAJbKUujBa31GYiUzOmwHQW4FX1qxGfXTsqBym8';
                 var convertedVapidPKey = urlBase64ToUint8Array(vapidPKey);
                 return reg.pushManager.subscribe({
                     userVisibleOnly: true,
@@ -188,11 +188,11 @@ function setPushSubscribe(){
             return fetch('https://days-pwas-practice.firebaseio.com/subscriptions.json', {
                 method: 'POST',
                 headers: {
-                    'Content-TYpe': 'application/json',
+                    'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify(newSub)
-            });
+            })
         })
         .then(function(response){
             if(response.ok)

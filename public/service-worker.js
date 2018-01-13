@@ -1,8 +1,8 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/indexedDB.js');
 
-var CACHE_STATIC = 'static-v10.0';
-var CACHE_DYNAMIC = 'dynamic-v8.0';
+var CACHE_STATIC = 'static-v11.1';
+var CACHE_DYNAMIC = 'dynamic-v9.1';
 
 self.addEventListener('install', function(event){
     console.log('[SW] 安裝(Install) Service Worker!',event);
@@ -236,4 +236,25 @@ self.addEventListener('notificationclick', function(event) {
 //滑掉通知、關掉通知無視選項
 self.addEventListener('notificationclose', function(event){
     console.log('使用者沒興趣',event);
+});
+
+self.addEventListener('push', function(event){
+    console.log('收到推播訊息', event);
+
+    var contentObj = {title: '新訊息', content: '預設訊息，會被伺服器訊息覆蓋'};
+    if(event.data){
+        contentObj = JSON.parse(event.data.text());
+    }
+
+    var options = {
+        body: contentObj.content,
+        icon: '/src/images/icons/demo-icon96.png',
+        lang: 'zh-Hant', //BCP 47
+        vibrate: [100, 50, 200],
+        badge: '/src/images/icons/demo-icon96.png',
+        tag: 'first-notification'
+    };
+    event.waitUntil(
+        self.registration.showNotification(contentObj.title, options)
+    );
 });
