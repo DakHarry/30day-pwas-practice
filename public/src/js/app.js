@@ -1,4 +1,5 @@
 var deferredPrompt;
+var enableNotifications = document.querySelectorAll('.enable-notifications');
 
 if('serviceWorker' in navigator){
     window.addEventListener('load', function(){
@@ -136,3 +137,101 @@ function getArticleFromDB(){
 //             }
 //         });
 // }
+function displayNotification(){
+    if('serviceWorker' in navigator){
+        var options = {
+            body: '歡迎進入30天PWA的世界',
+            icon: '/src/images/icons/demo-icon96.png',
+            image: '../images/demo.JPG',
+            dir: 'ltr',
+            lang: 'zh-Hant', //BCP 47
+            vibrate: [100, 50, 200],
+            badge: '/src/images/icons/demo-icon96.png',
+            tag: 'confirm-notification',
+            renotify: true,
+            actions: [
+                { action: 'confirm', title: '確認', icon: '/src/images/icons/demo-icon96.png'},
+                { action: 'cancel', title: '取消', icon: '/src/images/icons/demo-icon96.png'}
+            ]
+        };
+        navigator.serviceWorker.ready
+            .then(function(sw){
+                sw.showNotification('訂閱成功！！！', options);
+            })
+    }  
+     
+}
+
+function setPushSubscribe(){
+    if (!('serviceWorker' in navigator)) 
+        return;
+    var reg;
+    navigator.serviceWorker.ready
+        .then(function(sw){
+            reg = sw;
+          return sw.pushManager.getSubscription();
+        })
+        .then(function(sub){
+            if(sub === null){
+                //建立新的訂閱
+                var vapidPKey = 'BERFARN6mum_Jl39dKxPx_veR9_bLHnXs5GHn63zLwbPAebmn-IeLMCuzeyFIZNnQR-dGZO_WdxC7xak6W9p6Mc';
+                var convertedVapidPKey = urlBase64ToUint8Array(vapidPKey);
+                return reg.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: convertedVapidPKey
+                });
+            }else{
+                //已經訂閱
+            }
+        })
+        .then(function(newSub){
+            return fetch('https://days-pwas-practice.firebaseio.com/subscriptions.json', {
+                method: 'POST',
+                headers: {
+                    'Content-TYpe': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(newSub)
+            });
+        })
+        .then(function(response){
+            if(response.ok)
+                displayNotification();
+        })
+        .catch(function(err){
+            console.log('訂閱失敗',err);
+        });
+}
+
+function urlBase64ToUint8Array(base64String){
+    var padding = '='.repeat((4 - base64String.length % 4) % 4);
+    var base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g,'/');
+    var rawData = window.atob(base64);
+    var outputArr = new Uint8Array(rawData.length);
+
+    for (var i = 0; i < rawData.length; ++i ){
+        outputArr[i] = rawData.charCodeAt(i);
+    }    
+    return outputArr;
+}
+
+function askForNotificationPermission() {
+    Notification.requestPermission(function(status){
+        console.log('User Choice', status);
+        if (status !== 'granted') {
+            console.log('推播允許被拒絕了!');
+        } else {
+            // displayNotification();
+            setPushSubscribe();
+        }
+    });
+}
+
+if ('Notification' in window && 'serviceWorker' in navigator) {
+    for (var i= 0; i < enableNotifications.length; i++) {
+        enableNotifications[i].style.display = 'inline-block';
+        enableNotifications[i].addEventListener('click', askForNotificationPermission);
+    }
+}

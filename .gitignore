@@ -1,2 +1,5 @@
 .idea
 node_modules
+functions/pwa-firebase-pk.json
+functions/package-lock.json
+package-lock.json

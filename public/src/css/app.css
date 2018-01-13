@@ -46,3 +46,7 @@
 .shared-moment-card{
     margin-bottom: 20px;
 }
+
+.enable-notifications {
+    display: none;
+}

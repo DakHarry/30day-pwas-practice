@@ -219,3 +219,21 @@ self.addEventListener('sync', function(event){
         );
     }
 });
+
+self.addEventListener('notificationclick', function(event) {
+    var notification = event.notification;
+    var action = event.action;
+    console.log(event);
+    console.log(notification);
+    if(action === 'confirm') {
+        console.log('使用者點選確認');
+        notification.close();
+    } else {
+        console.log(action);
+    }
+});
+
+//滑掉通知、關掉通知無視選項
+self.addEventListener('notificationclose', function(event){
+    console.log('使用者沒興趣',event);
+});
