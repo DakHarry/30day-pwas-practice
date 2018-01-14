@@ -3,7 +3,8 @@ var enableNotifications = document.querySelectorAll('.enable-notifications');
 
 if('serviceWorker' in navigator){
     window.addEventListener('load', function(){
-        navigator.serviceWorker.register('/service-worker.js')
+        //navigator.serviceWorker.register('/service-worker.js')
+        navigator.serviceWorker.register('/workbox-sw-v1.js')
         .then(function(){
             console.log('Service Worker 註冊成功');
         })
