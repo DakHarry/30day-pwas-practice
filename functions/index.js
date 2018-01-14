@@ -44,7 +44,7 @@ exports.storePostData = functions.https.onRequest(function(request, response) {
                         p256dh: sub.val().keys.p256dh
                     }
                 };
-                webpush.sendNotification(pushConfig, JSON.stringify({title: '回來逛逛哦', content: '再撐一下就到30天啦'}))
+                webpush.sendNotification(pushConfig, JSON.stringify({title: '回來逛逛哦', content: '再撐一下就到30天啦', url: '/aboutUs/about.html'}))
                     .catch(function(err){
                         console.log('Server 推播失敗',err);
                     });

@@ -1,8 +1,8 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/indexedDB.js');
 
-var CACHE_STATIC = 'static-v11.1';
-var CACHE_DYNAMIC = 'dynamic-v9.1';
+var CACHE_STATIC = 'static-v12.2';
+var CACHE_DYNAMIC = 'dynamic-v10.2';
 
 self.addEventListener('install', function(event){
     console.log('[SW] 安裝(Install) Service Worker!',event);
@@ -225,11 +225,28 @@ self.addEventListener('notificationclick', function(event) {
     var action = event.action;
     console.log(event);
     console.log(notification);
+    
     if(action === 'confirm') {
         console.log('使用者點選確認');
         notification.close();
     } else {
         console.log(action);
+        event.waitUntil(
+            clients.matchAll()
+                .then(function(clis){
+                    var client = clis.find(function(c){
+                        return c.visibilityState === 'visible';
+                    });
+
+                    if (client !== undefined) {
+                        client.navigate(notification.data.url);
+                        client.focus();
+                    }else{
+                        clients.openWindow(notification.data.url);
+                    }
+                })
+        )
+        console.log('點選通知，導向',notification.data.url);
     }
 });
 
@@ -241,7 +258,7 @@ self.addEventListener('notificationclose', function(event){
 self.addEventListener('push', function(event){
     console.log('收到推播訊息', event);
 
-    var contentObj = {title: '新訊息', content: '預設訊息，會被伺服器訊息覆蓋'};
+    var contentObj = {title: '新訊息', content: '預設訊息，會被伺服器訊息覆蓋', url: 'http://網址'};
     if(event.data){
         contentObj = JSON.parse(event.data.text());
     }
@@ -252,7 +269,10 @@ self.addEventListener('push', function(event){
         lang: 'zh-Hant', //BCP 47
         vibrate: [100, 50, 200],
         badge: '/src/images/icons/demo-icon96.png',
-        tag: 'first-notification'
+        tag: 'first-notification',
+        data: {
+            url: contentObj.url
+        }
     };
     event.waitUntil(
         self.registration.showNotification(contentObj.title, options)
